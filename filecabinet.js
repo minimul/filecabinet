@@ -5,14 +5,18 @@
 
 var FileCabinet = Class.create({
   initialize: function(addLink,options){
+    this.options = Object.extend( {
+                      newElClassName: 'row',
+                      tableWidth: 100,
+                      linkTitle: 'Add an attachment',
+                      linkClassName: 'fileCabinetLinkClass',
+                      linkContent: 'add attachment'
+                      }, options || {} );
     this.addLink = $(addLink);
     this.addLink.observe( 'click',this.add.bindAsEventListener(this));
     this.container = new Element('div',{ 'class': 'fileCabinetContainer' });
     this.addLink.insert({ after: this.container });
-    this.options = Object.extend( {
-                      newElClassName: 'row',
-                      tableWidth: 100
-                      }, options || {} );
+    this.addAnother();
   },
   moveUnder: function(event,file){
     // To debug this section it is best to make the opacity = 20 for file=input
@@ -65,8 +69,10 @@ var FileCabinet = Class.create({
   },
   addAnother: function(){
     if(!$('addAnotherRow')){
-      var addAnotherRow = new Element('div', { 'id': 'addAnotherRow' }).update('<a href="">add another</a>');
-      addAnotherRow.down().observe('click',this.add.bindAsEventListener(this));
+      var o = this.options;
+      var link = '<a href="#" title="#{a}" class="#{b}">#{c}</a>'.interpolate({ a: o.linkTitle, b: o.linkClassName, c: o.linkContent });
+      var addAnotherRow = new Element('div', { 'id': 'addAnotherRow' }).update(link);
+      addAnotherRow.down('a').observe('click',this.add.bindAsEventListener(this));
       this.container.insert({ after: addAnotherRow });
       this.addAnotherRow = addAnotherRow;
     }
@@ -78,11 +84,6 @@ var FileCabinet = Class.create({
   remove: function(event,input){
     input.fire('inputField:removed');// fire a event in case you want to respond : must be before .remove()
     event.element().up('div.' + this.options.newElClassName).remove();
-    // Check an see if there are no more rows inside of fileCabinetContainer
-    // then delete the add another link
-    if(!this.container.childElements().size()){
-      this.addAnotherRow.remove();
-    }
     event.stop();
   }
 });

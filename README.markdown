@@ -18,7 +18,7 @@ Required HTML. You need to have a bit of HTML that defines the "add an attachmen
 
 <pre>
 <code class="html">
-&lt;span id=&quot;addAttachment&quot;&gt;Add an attachment&lt;/span&gt;
+&lt;span id=&quot;addAttachment&quot;&gt;&lt;/span&gt;
 </code>
 </pre>
 
